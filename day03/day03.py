@@ -6,7 +6,7 @@ match_numbers = re.compile("\D*(\d+)\D*")
 match_symbols = re.compile("[^0-9.]")
 
 
-def process_file(file_path):
+def process_file(file_path, debug):
     part_numbers = []
     possible_gears = {}
 
@@ -27,9 +27,10 @@ def process_file(file_path):
             number_start = match.start(1)
             number_end = match.end(1) - 1
 
-            # print(
-            #     f"Found number {number_found} on line {line_number}, spans {number_start} -> {number_end}"
-            # )
+            if debug:
+                print(
+                    f"Found number {number_found} on line {line_number}, spans {number_start} -> {number_end}"
+                )
 
             # Check the appropriate "coordinates" in the matrix to see if there's an "adjacent" symbol
             x_coords_range = range(number_start - 1, number_end + 2)
@@ -49,7 +50,8 @@ def process_file(file_path):
                     char_at_coord = char_matrix[x][y]
                     if re.match(match_symbols, char_at_coord):
                         if char_at_coord == "*":
-                            print(f"Possible gear found at ({x}, {y})")
+                            if debug:
+                                print(f"Possible gear found at ({x}, {y})")
                             gear_map_key = f"{x}-{y}"
                             gear_values = possible_gears.get(gear_map_key, [])
                             gear_values.append(int(number_found))
@@ -70,15 +72,22 @@ def process_file(file_path):
     }
     gear_ratios = {key: math.prod(value) for key, value in gears_actual.items()}
     gear_sum = sum(gear_ratios.values())
-    print(f"Sum of all gear ratios: {gear_sum}")
+    print(f"Sum of gear ratios: {gear_sum}")
 
 
 def main():
     parser = argparse.ArgumentParser(description="Advent of Code 2023: Day 3")
     parser.add_argument("input_file_path", help="Path to input data file")
+    parser.add_argument(
+        "-d",
+        "--debug",
+        help="Show debugging output",
+        action="store_true",
+        default=False,
+    )
     args = parser.parse_args()
 
-    process_file(args.input_file_path)
+    process_file(args.input_file_path, args.debug)
 
 
 if __name__ == "__main__":
