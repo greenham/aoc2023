@@ -1,4 +1,5 @@
 import argparse
+import math
 import re
 
 match_numbers = re.compile("\D*(\d+)\D*")
@@ -7,6 +8,7 @@ match_symbols = re.compile("[^0-9.]")
 
 def process_file(file_path):
     part_numbers = []
+    possible_gears = {}
 
     with open(file_path, "r") as file:
         file_contents = file.read()
@@ -44,16 +46,31 @@ def process_file(file_path):
 
             for x, y in coords_to_check:
                 if 0 <= x < len(char_matrix) and 0 <= y < len(char_matrix[x]):
-                    # print(f"Checking for symbol @ {x}, {y}")
                     char_at_coord = char_matrix[x][y]
                     if re.match(match_symbols, char_at_coord):
-                        # print(f"Symbol found: {char_at_coord}")
+                        if char_at_coord == "*":
+                            print(f"Possible gear found at ({x}, {y})")
+                            gear_map_key = f"{x}-{y}"
+                            gear_values = possible_gears.get(gear_map_key, [])
+                            gear_values.append(int(number_found))
+                            possible_gears[gear_map_key] = gear_values
+
                         part_numbers.append(number_found)
                         break
 
     part_numbers_int = [int(value) for value in part_numbers]
     print(f"{len(part_numbers)} part numbers found!")
     print(f"Sum of part numbers: {sum(part_numbers_int)}")
+
+    # Filter out any gears that don't have exactly two values
+    gears_actual = {
+        key: value
+        for key, value in possible_gears.items()
+        if isinstance(value, list) and len(value) == 2
+    }
+    gear_ratios = {key: math.prod(value) for key, value in gears_actual.items()}
+    gear_sum = sum(gear_ratios.values())
+    print(f"Sum of all gear ratios: {gear_sum}")
 
 
 def main():
