@@ -32,10 +32,12 @@ def process_file(file_path):
             # Check the appropriate "coordinates" in the matrix to see if there's an "adjacent" symbol
             x_coords_range = range(number_start - 1, number_end + 2)
             coords_to_check = (
+                # Left + Right
                 [
                     (line_number, number_start - 1),
                     (line_number, number_end + 1),
                 ]
+                # Above + Below + Diag
                 + [(line_number - 1, i) for i in x_coords_range]
                 + [(line_number + 1, i) for i in x_coords_range]
             )
