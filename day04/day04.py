@@ -7,31 +7,34 @@ numbers_pattern = re.compile("\D*(\d+)\D*")
 def process_file(file_path, debug):
     with open(file_path, "r") as file:
         file_contents = file.read()
+        file.close()
 
     # Split into lines
     lines = file_contents.splitlines()
 
-    card_total_value = 0
-    for line_number, line in enumerate(lines, 1):
+    card_value_map = {}
+    for line in lines:
         # Split out card info from numbers
-        parts = re.split(": ", line)
-        card_label = parts[0]
-        card_numbers = parts[1]
+        card_label, card_numbers = re.split(": ", line, 1)
 
         # Split out winning numbers from the Elf's
-        card_numbers_split = re.split(" \| ", card_numbers)
-        card_number_sets = [
+        card_winning_numbers, card_elf_numbers = [
             set(re.findall(numbers_pattern, number_set))
-            for number_set in card_numbers_split
+            for number_set in re.split(" \| ", card_numbers, 1)
         ]
-        card_winning_numbers = card_number_sets[0]
-        card_elf_numbers = card_number_sets[1]
-        card_winners = card_winning_numbers & card_elf_numbers
-        card_value = pow(2, len(card_winners) - 1) if len(card_winners) > 0 else 0
-        print(f"{card_label} is worth {card_value}")
-        card_total_value += card_value
 
-    print(f"Total value of all cards: {card_total_value}")
+        # Winners are the intersection of the sets
+        num_winners = len(card_winning_numbers & card_elf_numbers)
+
+        # TODO: Card copying
+
+        # Calculate value and aggregate
+        card_value = pow(2, num_winners - 1) if num_winners > 0 else 0
+        print(f"{card_label} is worth {card_value}")
+
+        card_value_map[card_label] = card_value
+
+    print(f"Total value of all cards: {sum(card_value_map.values())}")
 
 
 def main():
