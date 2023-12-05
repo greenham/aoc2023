@@ -12,7 +12,7 @@ def process_file(file_path):
     # Split into lines
     lines = file_contents.splitlines()
 
-    card_map = [{"copies": 0, "value": 0}] * len(lines)
+    card_map = [{}] * len(lines)
     for index, line in enumerate(lines, 0):
         # Split out card info from numbers
         card_label, card_numbers = re.split(": ", line, 1)
@@ -42,15 +42,12 @@ def process_file(file_path):
 
     for index, card in enumerate(card_map):
         num_matches = card.get("matches", 0)
-        num_copies = card.get("num_copies", 1)
-        print(
-            f"Processing Card {index+1} ({num_matches} matches) <has {num_copies} copies>"
-        )
         if num_matches <= 0:
             continue
 
         start = index + 1
         end = start + num_matches
+        num_copies = card.get("num_copies", 1)
 
         while start < end:
             card_map[start]["num_copies"] += num_copies
