@@ -27,36 +27,28 @@ def process_file(file_path):
             else:
                 number_maps[current_map].append(tuple(map(int, line.split())))
 
-    print(seed_numbers)
-    print(number_maps)
-
-    # {
-    #     "seed-to-soil": [[50, 98, 2], [52, 50, 48]],
-    #     "soil-to-fertilizer": [[0, 15, 37], [37, 52, 2], [39, 0, 15]],
-    #     "fertilizer-to-water": [[49, 53, 8], [0, 11, 42], [42, 0, 7], [57, 7, 4]],
-    #     "water-to-light": [[88, 18, 7], [18, 25, 70]],
-    #     "light-to-temperature": [[45, 77, 23], [81, 45, 19], [68, 64, 13]],
-    #     "temperature-to-humidity": [[0, 69, 1], [1, 0, 69]],
-    #     "humidity-to-location": [[60, 56, 37], [56, 93, 4]],
-    # }
-    # How to iterate over this with keys and values?
-
-    # dest_start, source_start, length
-
     lowest_location = None
     current_target = None
 
     for seed_number in seed_numbers:
+        print(f"Searching for location for seed {seed_number}...")
         current_target = seed_number
         for key, maps in number_maps.items():
+            print(f"CHECKING MAP: {key} | TARGET: {current_target}")
             for dest_start, source_start, length in maps:
                 if current_target in range(source_start, source_start + length + 1):
                     print(f"Found target {current_target} in map {key}!")
+
                     # This corresponds to the matching entry in the destination range
                     new_target = dest_start + current_target - source_start
-                    print(f"Maps to destination: {new_target}")
+                    print(f"Setting new target: {new_target}")
                     current_target = new_target
-                    continue
+                    break
+
+        if lowest_location is None or current_target < lowest_location:
+            lowest_location = current_target
+
+    print(f"Lowest location found: {lowest_location}")
 
 
 def main():
