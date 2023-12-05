@@ -63,11 +63,13 @@ Consider again the example `seed-to-soil map`:
 52 50 48
 ```
 
-The first line has a destination range start of 50, a source range start of 98, and a range length of 2. This line means that the source range starts at 98 and contains two values: 98 and 99. The destination range is the same length, but it starts at 50, so its two values are 50 and 51. With this information, you know that seed number 98 corresponds to soil number 50 and that seed number 99 corresponds to soil number 51.
+`dest_start` `source_start` `length`
 
-The second line means that the source range starts at 50 and contains 48 values: 50, 51, ..., 96, 97. This corresponds to a destination range starting at 52 and also containing 48 values: 52, 53, ..., 98, 99. So, seed number 53 corresponds to soil number 55.
+The first line has a destination range start of `50`, a source range start of `98`, and a range length of `2`. This line means that the source range starts at `98` and contains two values: `98` and `99`. The destination range is the same length, but it starts at `50`, so its two values are `50` and `51`. With this information, you know that seed number `98` corresponds to soil number `50` and that seed number `99` corresponds to soil number `51`.
 
-Any source numbers that aren't mapped correspond to the same destination number. So, seed number 10 corresponds to soil number 10.
+The second line means that the source range starts at `50` and contains `48` values: `50`, `51`, ..., `96`, `97`. This corresponds to a destination range starting at `52` and also containing `48` values: `52`, `53`, ..., `98`, `99`. So, seed number `53` corresponds to soil number `55`.
+
+Any source numbers that aren't mapped correspond to the same destination number. So, seed number `10` corresponds to soil number `10`.
 
 So, the entire list of seed numbers and their corresponding soil numbers looks like this:
 
