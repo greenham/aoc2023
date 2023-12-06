@@ -44,7 +44,7 @@ def get_possible_wins_in_race(time, record):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Advent of Code 2023: Day 5")
+    parser = argparse.ArgumentParser(description="Advent of Code 2023: Day 6")
     parser.add_argument("input_file_path", help="Path to input data file")
     args = parser.parse_args()
     process_file(args.input_file_path)
