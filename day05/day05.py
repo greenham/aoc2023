@@ -42,37 +42,37 @@ def get_lowest_location_for_seeds(seeds, maps):
     locations = []
 
     for seed_range in seeds:
-        ranges_to_check = [[seed_range[0], seed_range[1] + seed_range[0]]]
+        targets_to_check = [[seed_range[0], seed_range[1] + seed_range[0]]]
         results = []
         for m in maps.values():
-            while ranges_to_check:
-                range_start, range_end = ranges_to_check.pop()
+            while targets_to_check:
+                target_start, target_end = targets_to_check.pop()
                 for dest_start, source_start, map_length in m:
                     source_end = source_start + map_length
                     dest_offset = dest_start - source_start
 
-                    if source_end <= range_start or range_end <= source_start:
+                    if source_end <= target_start or target_end <= source_start:
                         # Falls outside of range
                         continue
 
-                    if range_start < source_start:
+                    if target_start < source_start:
                         # Beginning of range comes before beginning of source
-                        ranges_to_check.append([range_start, source_start])
-                        range_start = source_start
+                        targets_to_check.append([target_start, source_start])
+                        target_start = source_start
 
-                    if source_end < range_end:
+                    if source_end < target_end:
                         # End of range comes after end of source
-                        ranges_to_check.append([source_end, range_end])
-                        range_end = source_end
+                        targets_to_check.append([source_end, target_end])
+                        target_end = source_end
 
-                    results.append([range_start + dest_offset, range_end + dest_offset])
+                    results.append([target_start + dest_offset, target_end + dest_offset])
                     break
                 else:
-                    results.append([range_start, range_end])
+                    results.append([target_start, target_end])
 
-            ranges_to_check = results
+            targets_to_check = results
             results = []
-        locations += ranges_to_check
+        locations += targets_to_check
 
     return min(location[0] for location in locations)
 
