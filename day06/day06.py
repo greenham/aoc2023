@@ -15,20 +15,32 @@ def process_file(file_path):
     races = list(zip(times, records))
 
     ways_to_win = []
+    race_counter = 0
     for time, record in races:
-        # Calculate wins for each possible time we can hold the button down
-        # (except for 0 and time)
-        wins = 0
-        hold_time = time - 1
-        while hold_time > 0:
-            distance = hold_time * (time - hold_time)
-            hold_time -= 1
-            if distance > record:
-                wins += 1
-
+        wins = get_possible_wins_in_race(time, record)
+        race_counter += 1
+        print(f"{wins} possible wins in race {race_counter}")
         ways_to_win.append(wins)
 
-    print(math.prod(ways_to_win))
+    print(f"Margin of error: {math.prod(ways_to_win)}")
+
+    # hacky part 2
+    clean_times = int(re.sub(r"\D+", "", lines[0]))
+    clean_records = int(re.sub(r"\D+", "", lines[1]))
+    print(
+        f"Possible wins for big race: {get_possible_wins_in_race(clean_times, clean_records)}"
+    )
+
+
+def get_possible_wins_in_race(time, record):
+    wins = 0
+    hold_time = time - 1
+    while hold_time > 0:
+        distance = hold_time * (time - hold_time)
+        hold_time -= 1
+        if distance > record:
+            wins += 1
+    return wins
 
 
 def main():
