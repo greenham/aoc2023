@@ -57,8 +57,12 @@ class Hand:
                 char_count[char] = 1
 
         # item[0] needs to be a card so the comparison works
-        sorted_counts = sorted(
-            char_count.items(), key=lambda item: (item[1], Card(item[0])), reverse=True
+        sorted_counts = dict(
+            sorted(
+                char_count.items(),
+                key=lambda item: (item[1], Card(item[0])),
+                reverse=True,
+            )
         )
 
         print("----------------------------------")
@@ -66,25 +70,25 @@ class Hand:
         print(f"Sorted char counts: {sorted_counts}")
 
         joker_count = 0
-        if jokers_wild and "J" in char_count:
-            joker_count = char_count["J"]
+        if jokers_wild and "J" in sorted_counts:
+            joker_count = sorted_counts["J"]
             print(
                 f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!JOKERS WILD!! (found {joker_count})"
             )
 
-        best_count = sorted_counts[0][1]
-        print(f"Best count: {best_count}")
+        best_card, best_count = next(iter(sorted_counts.items()))
+        next_best_card, next_best_count = next(iter(sorted_counts.items()))
+        print(f"Best card:count: {best_card}:{best_count}")
 
-        # If best_count is 1 or 2 we want to pair our jokers with the highest card?
-        # We're okay with this being == "J" iif best_count is 1
-        if jokers_wild and joker_count > 0:
-            best_card_is_joker = sorted_counts[0][0] == "J"
-            if not best_card_is_joker or best_count == 1:
-                print(
-                    "Best card is NOT a Joker [OR] it IS, and the best_count is 1, so we want to treat this as a pair"
-                )
-                best_count += joker_count
-                print(f"New best count: {best_count}")
+        if jokers_wild and joker_count > 0 and (best_card != "J" or best_count == 1):
+            # Replace best cards with J's (unless best card IS J, in which case, count is 1, so use the 2nd best)
+            replace_with_card = best_card if best_card != "J" else next_best_card
+            for card in self.cards:
+                if card.value == "J":
+                    card.value = replace_with_card
+
+            best_count += joker_count
+            print(f"New best count: {best_count}")
 
         if best_count == 5:
             self.hand_type = "five-of-a-kind"
@@ -92,12 +96,12 @@ class Hand:
             self.hand_type = "four-of-a-kind"
         elif best_count == 3:
             # check for full house
-            if (sorted_counts[1][1]) == 2:
+            if (next_best_count) == 2:
                 self.hand_type = "full-house"
             else:
                 self.hand_type = "three-of-a-kind"
         elif best_count == 2:
-            if (sorted_counts[1][1]) == 2:
+            if (next_best_count) == 2:
                 self.hand_type = "two-pair"
             else:
                 self.hand_type = "one-pair"
