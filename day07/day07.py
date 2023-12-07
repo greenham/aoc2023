@@ -61,6 +61,7 @@ class Hand:
             char_count.items(), key=lambda item: (item[1], Card(item[0])), reverse=True
         )
 
+        print("----------------------------------")
         print(f"Ranking hand: {self.value}")
         print(f"Sorted char counts: {sorted_counts}")
 
