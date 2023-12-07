@@ -98,6 +98,9 @@ class Hand:
         for self_card, other_card in compare_cards:
             if self_card < other_card:
                 return True
+
+            if self_card > other_card:
+                return False
         else:
             return False
 
@@ -113,6 +116,8 @@ class Hand:
         for self_card, other_card in compare_cards:
             if self_card > other_card:
                 return True
+            if self_card < other_card:
+                return False
         else:
             return False
 
@@ -143,7 +148,7 @@ def process_file(file_path):
 
     sorted_hands = sorted(hands, reverse=True)
 
-    hand_final_rank = 5
+    hand_final_rank = len(sorted_hands)
     ranked_hands = []
     for hand in sorted_hands:
         hand.final_rank = hand_final_rank
