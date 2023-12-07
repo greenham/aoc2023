@@ -71,6 +71,9 @@ class Hand:
             )
         )
 
+        # print(sorted_counts)
+        # {'J': 2, 'Q': 1, '6': 1, '2': 1}
+
         # print("----------------------------------")
         # print(f"Ranking hand: {self.value}")
         # print(f"Sorted char counts: {sorted_counts}")
@@ -93,8 +96,13 @@ class Hand:
         # print(f"Best card:count: {best_card}:{best_count}")
         # print(f"Next best card:count: {next_best_card}:{next_best_count}")
 
-        if jokers_wild and joker_count > 0 and (best_card != "J" or best_count == 1):
-            best_count += joker_count
+        if jokers_wild and joker_count > 0:
+            if best_card != "J" or best_count == 1:
+                best_count += joker_count
+            else:
+                # best card is a Joker and best_count > 1
+                # pair with next_best_card
+                best_count += next_best_count
 
         if best_count == 5:
             self.hand_type = "five-of-a-kind"
@@ -201,9 +209,9 @@ def process_file(file_path, jokers_wild=False):
         hand.final_rank = hand_final_rank
         hand.bid = bids[hand.ref]
         hand.winnings = hand.final_rank * hand.bid
-        print(
-            f"winnings for <Hand:{hand.ref}> [{hand.value}] ({hand.hand_type}): {hand.winnings} (final rank: {hand.final_rank}, bid: {hand.bid})"
-        )
+        # print(
+        #     f"winnings for <Hand:{hand.ref}> [{hand.value}] ({hand.hand_type}): {hand.winnings} (final rank: {hand.final_rank}, bid: {hand.bid})"
+        # )
         ranked_hands.append(hand)
         hand_final_rank -= 1
 
