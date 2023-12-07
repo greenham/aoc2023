@@ -89,9 +89,9 @@ class Hand:
         else:
             next_best_card, next_best_count = (None, 0)
 
-        print(self)
-        print(f"Best card:count: {best_card}:{best_count}")
-        print(f"Next best card:count: {next_best_card}:{next_best_count}")
+        # print(self)
+        # print(f"Best card:count: {best_card}:{best_count}")
+        # print(f"Next best card:count: {next_best_card}:{next_best_count}")
 
         if jokers_wild and joker_count > 0 and (best_card != "J" or best_count == 1):
             best_count += joker_count
@@ -126,16 +126,20 @@ class Hand:
         if self.rank > other.rank:
             return False
 
+        # print("-------------------------------")
+        # print(f"Running hand comparison for {self.value} < {other.value}")
         compare_cards = list(zip(self.cards, other.cards))
         for self_card, other_card in compare_cards:
-            # print("-------------------------------")
             # print(f"Comparing cards: {self_card.value} < {other_card.value}?")
             if self_card < other_card:
                 # print("TRUE")
                 return True
-            else:
+            if self_card > other_card:
                 # print("FALSE")
                 return False
+        else:
+            # Hands are the same?
+            print("SAME?")
 
     def __gt__(self, other):
         # compare ranks first
@@ -145,16 +149,20 @@ class Hand:
         if self.rank < other.rank:
             return False
 
+        # print("-------------------------------")
+        # print(f"Running hand comparison for {self.value} > {other.value}")
         compare_cards = list(zip(self.cards, other.cards))
         for self_card, other_card in compare_cards:
-            # print("-------------------------------")
             # print(f"Comparing cards: {self_card.value} < {other_card.value}?")
             if self_card > other_card:
                 # print("TRUE")
                 return True
-            else:
+            if self_card < other_card:
                 # print("FALSE")
                 return False
+        else:
+            # Hands are the same?
+            print("SAME?")
 
     def __eq__(self, other):
         return self.value == other.value
@@ -163,7 +171,7 @@ class Hand:
         return self.value
 
     def __repr__(self):
-        return f"(<Hand:{self.ref}>: 'value': '{self.value}', 'hand_type': '{self.hand_type}', rank: '{self.rank}')\n"
+        return f"(<Hand:{self.ref}>: 'value': '{self.value}', 'hand_type': '{self.hand_type}', 'ref': '{self.ref}')\n"
 
 
 def process_file(file_path, jokers_wild=False):
@@ -185,7 +193,7 @@ def process_file(file_path, jokers_wild=False):
     bids = list(map(int, data_by_columns[1]))
 
     sorted_hands = sorted(hands, reverse=True)
-    print(sorted_hands)
+    # print(sorted_hands)
 
     hand_final_rank = len(sorted_hands)
     ranked_hands = []
@@ -193,10 +201,9 @@ def process_file(file_path, jokers_wild=False):
         hand.final_rank = hand_final_rank
         hand.bid = bids[hand.ref]
         hand.winnings = hand.final_rank * hand.bid
-        # if "J" in hand.value:
-        #     print(
-        #         f"winnings for <Hand:{hand.ref}> [{hand.value}] ({hand.hand_type}): {hand.winnings} (final rank: {hand.final_rank}, bid: {hand.bid})"
-        #     )
+        print(
+            f"winnings for <Hand:{hand.ref}> [{hand.value}] ({hand.hand_type}): {hand.winnings} (final rank: {hand.final_rank}, bid: {hand.bid})"
+        )
         ranked_hands.append(hand)
         hand_final_rank -= 1
 
