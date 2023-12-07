@@ -81,11 +81,12 @@ class Hand:
         print(f"Best card:count: {best_card}:{best_count}")
 
         if jokers_wild and joker_count > 0 and (best_card != "J" or best_count == 1):
-            # Replace best cards with J's (unless best card IS J, in which case, count is 1, so use the 2nd best)
-            replace_with_card = best_card if best_card != "J" else next_best_card
-            for card in self.cards:
-                if card.value == "J":
-                    card.value = replace_with_card
+            # Replace J's with best card (unless best card IS J, in which case, count is 1, so use the 2nd best)
+            # replace_with_card = best_card if best_card != "J" else next_best_card
+            # for card in self.cards:
+            #     if card.value == "J":
+            #         print(f"**************REPLACED JOKER WITH: {replace_with_card}")
+            #         card.value = replace_with_card
 
             best_count += joker_count
             print(f"New best count: {best_count}")
