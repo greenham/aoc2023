@@ -41,6 +41,12 @@ class Card:
     def __eq__(self, other):
         return self.value == other.value
 
+    def __str__(self):
+        return self.value
+
+    def __repr__(self):
+        return f"{self.value}"
+
 
 class Hand:
     def __init__(self, value, ref, jokers_wild=False):
@@ -65,31 +71,30 @@ class Hand:
             )
         )
 
-        print("----------------------------------")
-        print(f"Ranking hand: {self.value}")
-        print(f"Sorted char counts: {sorted_counts}")
+        # print("----------------------------------")
+        # print(f"Ranking hand: {self.value}")
+        # print(f"Sorted char counts: {sorted_counts}")
 
         joker_count = 0
         if jokers_wild and "J" in sorted_counts:
             joker_count = sorted_counts["J"]
-            print(
-                f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!JOKERS WILD!! (found {joker_count})"
-            )
+            # print(
+            #     f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!JOKERS WILD!! (found {joker_count})"
+            # )
 
-        best_card, best_count = next(iter(sorted_counts.items()))
-        next_best_card, next_best_count = next(iter(sorted_counts.items()))
+        sorted_counts_list = list(sorted_counts.items())
+        best_card, best_count = sorted_counts_list[0]
+        if len(sorted_counts_list) > 1:
+            next_best_card, next_best_count = sorted_counts_list[1]
+        else:
+            next_best_card, next_best_count = (None, 0)
+
+        print(self)
         print(f"Best card:count: {best_card}:{best_count}")
+        print(f"Next best card:count: {next_best_card}:{next_best_count}")
 
         if jokers_wild and joker_count > 0 and (best_card != "J" or best_count == 1):
-            # Replace J's with best card (unless best card IS J, in which case, count is 1, so use the 2nd best)
-            # replace_with_card = best_card if best_card != "J" else next_best_card
-            # for card in self.cards:
-            #     if card.value == "J":
-            #         print(f"**************REPLACED JOKER WITH: {replace_with_card}")
-            #         card.value = replace_with_card
-
             best_count += joker_count
-            print(f"New best count: {best_count}")
 
         if best_count == 5:
             self.hand_type = "five-of-a-kind"
@@ -97,19 +102,19 @@ class Hand:
             self.hand_type = "four-of-a-kind"
         elif best_count == 3:
             # check for full house
-            if (next_best_count) == 2:
+            if next_best_count == 2:
                 self.hand_type = "full-house"
             else:
                 self.hand_type = "three-of-a-kind"
         elif best_count == 2:
-            if (next_best_count) == 2:
+            if next_best_count == 2:
                 self.hand_type = "two-pair"
             else:
                 self.hand_type = "one-pair"
         elif best_count == 1:
             self.hand_type = "high-card"
 
-        print(f"Setting hand type to: {self.hand_type}")
+        # print(f"Setting hand type to: {self.hand_type}")
 
         self.rank = hand_rankings[self.hand_type]
 
@@ -123,13 +128,14 @@ class Hand:
 
         compare_cards = list(zip(self.cards, other.cards))
         for self_card, other_card in compare_cards:
+            # print("-------------------------------")
+            # print(f"Comparing cards: {self_card.value} < {other_card.value}?")
             if self_card < other_card:
+                # print("TRUE")
                 return True
-
-            if self_card > other_card:
+            else:
+                # print("FALSE")
                 return False
-        else:
-            return False
 
     def __gt__(self, other):
         # compare ranks first
@@ -141,12 +147,14 @@ class Hand:
 
         compare_cards = list(zip(self.cards, other.cards))
         for self_card, other_card in compare_cards:
+            # print("-------------------------------")
+            # print(f"Comparing cards: {self_card.value} < {other_card.value}?")
             if self_card > other_card:
+                # print("TRUE")
                 return True
-            if self_card < other_card:
+            else:
+                # print("FALSE")
                 return False
-        else:
-            return False
 
     def __eq__(self, other):
         return self.value == other.value
@@ -155,7 +163,7 @@ class Hand:
         return self.value
 
     def __repr__(self):
-        return f"<Hand:{self.ref}>: 'value': '{self.value}', 'hand_type': '{self.hand_type}', rank: '{self.rank}' | "
+        return f"(<Hand:{self.ref}>: 'value': '{self.value}', 'hand_type': '{self.hand_type}', rank: '{self.rank}')\n"
 
 
 def process_file(file_path, jokers_wild=False):
@@ -177,6 +185,7 @@ def process_file(file_path, jokers_wild=False):
     bids = list(map(int, data_by_columns[1]))
 
     sorted_hands = sorted(hands, reverse=True)
+    print(sorted_hands)
 
     hand_final_rank = len(sorted_hands)
     ranked_hands = []
