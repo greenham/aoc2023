@@ -17,10 +17,6 @@ card_value_map = {
     "A": 12,
 }
 
-# Reading a stream of characters
-# Keeping track of how many of each char we've seen
-# Sort that list, check the max
-
 hand_rankings = {
     "five-of-a-kind": 7,
     "four-of-a-kind": 6,
@@ -131,7 +127,7 @@ class Hand:
         return f"<Hand:{self.ref}>: 'value': '{self.value}', 'hand_type': '{self.hand_type}', rank: '{self.rank}' | "
 
 
-def process_file(file_path):
+def process_file(file_path, jokers_wild=False):
     with open(file_path, "r") as file:
         file_contents = file.read()
         file.close()
@@ -144,7 +140,6 @@ def process_file(file_path):
         Hand(hand_string, ref) for ref, hand_string in enumerate(data_by_columns[0])
     ]
     bids = list(map(int, data_by_columns[1]))
-    # Tie these together via in ID or something since they're gonna get sorted
 
     sorted_hands = sorted(hands, reverse=True)
 
@@ -160,15 +155,21 @@ def process_file(file_path):
         ranked_hands.append(hand)
         hand_final_rank -= 1
 
-    # print(ranked_hands)
     print(f"Total winnings: {sum(hand.winnings for hand in ranked_hands)}")
 
 
 def main():
     parser = argparse.ArgumentParser(description=f"Advent of Code 2023: Day {DAY}")
     parser.add_argument("input_file_path", help="Path to input data file")
+    parser.add_argument(
+        "-j",
+        "--jokers",
+        help="Activate Jokers!",
+        action="store_true",
+        default=False,
+    )
     args = parser.parse_args()
-    process_file(args.input_file_path)
+    process_file(args.input_file_path, args.jokers)
 
 
 if __name__ == "__main__":
