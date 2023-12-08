@@ -2,6 +2,9 @@ DAY = 8
 import argparse
 import re
 
+ends_in_a = re.compile("^..A$")
+ends_in_z = re.compile("^..Z$")
+
 
 def process_file(file_path, ghost=False):
     with open(file_path, "r") as file:
@@ -50,31 +53,38 @@ def process_file(file_path, ghost=False):
     # Part 2
     else:
         current_nodes = {
-            key: value for key, value in node_map.items() if re.match("^.*A$", key)
+            key: value for key, value in node_map.items() if ends_in_a.match(key)
         }
-        print(f"Starting nodes: {current_nodes}")
+        # print(f"Starting nodes: {current_nodes}")
         while True:
-            # get the next set of nodes to follow
-            next_maps = current_nodes.values()
+            # get the next set of node keys to follow
             follow_index = 0 if directions[current_step] == "L" else 1
-            next_node_keys = [item[follow_index] for item in next_maps]
+            next_node_keys = set(
+                paths[follow_index] for paths in current_nodes.values()
+            )
             steps_taken += 1
 
-            print(f"taking {directions[current_step]} path")
-            print(f"next_node_keys: {next_node_keys}")
-            print(f"steps taken so far: {steps_taken}")
+            # print(f"paths: {current_nodes.values()}")
+            # print(f"taking {directions[current_step]} paths")
+            # print(f"next_node_keys: {next_node_keys}")
+            # print(f"steps taken so far: {steps_taken}")
 
             # see if they all end in Z
-            if all(re.match("^.*Z$", key) for key in next_node_keys):
+            if all(ends_in_z.match(key) for key in next_node_keys):
                 print("We made it!")
                 break
 
+            # follow next set of nodes
             current_nodes = {
                 key: value for key, value in node_map.items() if key in next_node_keys
             }
+            # print(f"Next nodes: {current_nodes}")
 
             # handle incrementing + reaching the end of the directions without having found the end
             current_step = (current_step + 1) % len(directions)
+
+            if current_step % 5000 == 0:
+                print(f"Current stepcount: {steps_taken}")
 
     print(f"Total steps taken: {steps_taken}")
 
