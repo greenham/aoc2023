@@ -2,17 +2,41 @@ DAY = 8
 import argparse
 
 
-def process_file(file_path, jokers_wild=False):
+def process_file(file_path):
     with open(file_path, "r") as file:
         file_contents = file.read()
         file.close()
 
     lines = file_contents.split("\n")
-    directions = lines[0]
+    directions = list(lines[0])
     nodes = lines[2::]
+    node_map = {}
 
-    print(directions)
-    print(nodes)
+    for node in nodes:
+        key, value = map(str.strip, node.split("="))
+        value_tuple = tuple(map(str.strip, value.strip("()").split(",")))
+        node_map[key] = value_tuple
+
+    steps_to_take = directions[:]
+    current_node_id = next(iter(node_map))
+    steps_taken = 0
+    for step in steps_to_take:
+        next_element_map = node_map[current_node_id]
+        print(f"Current node: {current_node_id}, going {step}, map: {next_element_map}")
+
+        current_node_id = next_element_map[0] if step == "L" else next_element_map[1]
+        steps_taken += 1
+        print(f"Next node is {current_node_id}! Steps taken: {steps_taken}")
+        if current_node_id == "ZZZ":
+            print("We made it!")
+            break
+
+        # handle reaching the end
+        if steps_taken == len(directions):
+            print(f"Reached the end, repeating {len(directions)} directions")
+            steps_to_take.extend(directions)
+
+    print(f"Total steps taken: {steps_taken}")
 
 
 def main():
