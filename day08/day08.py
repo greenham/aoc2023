@@ -18,8 +18,9 @@ def process_file(file_path):
         node_map[key] = value_tuple
 
     steps_to_take = directions[:]
-    current_node_id = next(iter(node_map))
+    current_node_id = "AAA"
     steps_taken = 0
+    loops_made = 1
     for step in steps_to_take:
         next_element_map = node_map[current_node_id]
         print(f"Current node: {current_node_id}, going {step}, map: {next_element_map}")
@@ -32,9 +33,15 @@ def process_file(file_path):
             break
 
         # handle reaching the end
-        if steps_taken == len(directions):
+        # fix this
+        if steps_taken == len(directions) * (loops_made):
             print(f"Reached the end, repeating {len(directions)} directions")
+            loops_made += 1
             steps_to_take.extend(directions)
+
+        if loops_made == 500:
+            print("safety break")
+            break
 
     print(f"Total steps taken: {steps_taken}")
 
