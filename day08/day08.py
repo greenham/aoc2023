@@ -1,5 +1,6 @@
 DAY = 8
 import argparse
+import math
 import re
 
 ends_in_a = re.compile("^..A$")
@@ -50,43 +51,42 @@ def process_file(file_path, ghost=False):
             print(
                 f"Next node is {current_node_id}, total steps taken so far: {steps_taken}, current step: {current_step}"
             )
+
+        print(f"Total steps taken: {steps_taken}")
     # Part 2
     else:
         current_nodes = {
             key: value for key, value in node_map.items() if ends_in_a.match(key)
         }
+        path_lengths = []
         # print(f"Starting nodes: {current_nodes}")
-        while True:
-            # get the next set of node keys to follow
-            follow_index = 0 if directions[current_step] == "L" else 1
-            next_node_keys = set(
-                paths[follow_index] for paths in current_nodes.values()
-            )
-            steps_taken += 1
+        for current_node_id, current_path in current_nodes.items():
+            # print(f"Looking at node {current_node_id}, paths: {current_path}")
+            steps_taken = 0
+            while True:
+                follow_index = 0 if directions[current_step] == "L" else 1
+                next_node_id = current_path[follow_index]
+                # print(
+                #     f"taking {directions[current_step]} path, next_node_id: {next_node_id}"
+                # )
+                steps_taken += 1
+                # print(f"Current step count: {steps_taken}")
 
-            # print(f"paths: {current_nodes.values()}")
-            # print(f"taking {directions[current_step]} paths")
-            # print(f"next_node_keys: {next_node_keys}")
-            # print(f"steps taken so far: {steps_taken}")
+                if ends_in_z.match(next_node_id):
+                    # print("Found a **Z node! Adding to path_lengths...")
+                    current_step = 0
+                    path_lengths.append(steps_taken)
+                    break
 
-            # see if they all end in Z
-            if all(ends_in_z.match(key) for key in next_node_keys):
-                print("We made it!")
-                break
+                current_node_id = next_node_id
+                current_path = node_map[current_node_id]
 
-            # follow next set of nodes
-            current_nodes = {
-                key: value for key, value in node_map.items() if key in next_node_keys
-            }
-            # print(f"Next nodes: {current_nodes}")
+                # print(f"moved to {next_node_id}, next paths: {current_path}")
 
-            # handle incrementing + reaching the end of the directions without having found the end
-            current_step = (current_step + 1) % len(directions)
+                # handle incrementing + reaching the end of the directions without having found the end
+                current_step = (current_step + 1) % len(directions)
 
-            if current_step % 5000 == 0:
-                print(f"Current stepcount: {steps_taken}")
-
-    print(f"Total steps taken: {steps_taken}")
+        print(f"Steps to **Z: {math.lcm(*path_lengths)}")
 
 
 def main():
