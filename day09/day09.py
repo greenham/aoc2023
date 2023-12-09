@@ -52,7 +52,7 @@ def get_next_value(lists, backwards=False):
         lists = [list(reversed(l)) for l in lists]
 
     for i in range(2, len(lists)):
-        prev_value = lists[i - 1][-1] * -1 if backwards else lists[i - 1][-1]
+        prev_value = -lists[i - 1][-1] if backwards else lists[i - 1][-1]
         lists[i].append(prev_value + lists[i][-1])
 
     return lists[-1][-1]
