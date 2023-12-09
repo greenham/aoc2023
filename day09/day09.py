@@ -40,7 +40,7 @@ def get_diffs(history, acc):
 
     acc += [new_diffs]
 
-    if sum(new_diffs) == 0:
+    if all(d == 0 for d in new_diffs):
         return acc
 
     return get_diffs(new_diffs.copy(), acc)
