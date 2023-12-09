@@ -55,9 +55,7 @@ def get_next_value(lists):
 
 def main():
     parser = argparse.ArgumentParser(description=f"Advent of Code 2023: Day {DAY}")
-    parser.add_argument(
-        "input_file_path", help="Path to input data file", default="example-input"
-    )
+    parser.add_argument("input_file_path", help="Path to input data file")
     args = parser.parse_args()
     process_file(args.input_file_path)
 
