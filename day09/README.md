@@ -86,4 +86,4 @@ So, the next value of the third history is 68.
 
 If you find the next value for each history in this example and add them together, you get 114.
 
-Analyze your OASIS report and extrapolate the next value for each history. What is the sum of these extrapolated values?
+Analyze your OASIS report and extrapolate the next value for each history. **What is the sum of these extrapolated values?**
