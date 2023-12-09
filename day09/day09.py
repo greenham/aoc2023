@@ -47,10 +47,8 @@ def get_diffs(history, acc):
 
 
 def get_next_value(lists):
-    for i in range(1, len(lists)):
-        if lists[i - 1] and lists[i]:
-            new_element = lists[i - 1][-1] + lists[i][-1]
-            lists[i].append(new_element)
+    for i in range(2, len(lists)):
+        lists[i].append(lists[i - 1][-1] + lists[i][-1])
 
     return lists[-1][-1]
 
